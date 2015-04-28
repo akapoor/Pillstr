@@ -68,6 +68,7 @@ public class UserResource {
     @GET
     @Path("/{id}/all-reminders-for-entire-week/{year}/{month}/{date}")
     public List<Reminder> getAllReminders(@PathParam("id") int id, @PathParam("year") int year, @PathParam("month") int month, @PathParam("date") int date) {
+        month--;
         return remindersHandler.getAllRemindersByUserId(id, year, month, date);
     }
 

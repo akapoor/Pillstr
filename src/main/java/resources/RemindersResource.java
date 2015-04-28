@@ -78,6 +78,7 @@ public class RemindersResource {
     @GET
     @Path("/-/by-prescriptionId-for-entire-week/{prescriptionId}/{year}/{month}/{date}")
     public List<Reminder> getByPrescriptionIdForEntireWeek(@PathParam("prescriptionId") int prescriptionId, @PathParam("year")int year, @PathParam("month") int month, @PathParam("date") int date) {
+        month--;
         return remindersHandler.generateRemindersForEntireWeek(prescriptionId, year, month, date);
     }
 }

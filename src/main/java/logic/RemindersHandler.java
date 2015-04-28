@@ -44,6 +44,7 @@ public class RemindersHandler {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, date);
         cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR));
+        cal.add(Calendar.DATE, -1);
 
 
         List<Reminder> result = new ArrayList<>();
