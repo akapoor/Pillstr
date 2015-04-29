@@ -22,7 +22,7 @@ public interface UserDAO {
 
     @SqlUpdate("INSERT INTO users (name, username, password, email, phone) VALUES (:name, :username, :password, :email, :phone)")
     @GetGeneratedKeys
-    public int insert(@Bind("name") String name, @Bind("username") String username, @Bind("password") String password, @Bind("email") String email, @Bind("phone") int phone);
+    public int insert(@Bind("name") String name, @Bind("username") String username, @Bind("password") String password, @Bind("email") String email, @Bind("phone") String phone);
 
     @SqlQuery("SELECT * FROM users WHERE id = :id LIMIT 1")
     public User get(@Bind("id") int id);
@@ -46,5 +46,5 @@ public interface UserDAO {
     void setUsername(@Bind("id") int id, @Bind("username") String username);
 
     @SqlUpdate("UPDATE users SET phone = :phone WHERE id = :id")
-    void setPhone(@Bind("id") int id, @Bind("phone") int phone);
+    void setPhone(@Bind("id") int id, @Bind("phone") String phone);
 }

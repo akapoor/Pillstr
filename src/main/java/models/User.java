@@ -13,7 +13,7 @@ public class User {
     private String name;
     private String username;
     private String email;
-    private int phone;
+    private String phone;
     private String password;
 
     @JsonCreator
@@ -21,7 +21,7 @@ public class User {
                 @JsonProperty("name") String name,
                 @JsonProperty("username") String username,
                 @JsonProperty("email") String email,
-                @JsonProperty("phone") int phone,
+                @JsonProperty("phone") String phone,
                 @JsonProperty("password") String password) {
         this.id = id;
         this.name = name;
@@ -47,7 +47,7 @@ public class User {
         return email;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 

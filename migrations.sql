@@ -24,7 +24,7 @@ CREATE TABLE `users` (
   `username` varchar(250) NOT NULL UNIQUE,
   `email` varchar(250) NOT NULL,
   `password` varchar(250) NOT NULL,
-  `phone` int(11),
+  `phone` varchar(250),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
