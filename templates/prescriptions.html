@@ -35,31 +35,34 @@
 <div class="container">
     <div class="col-md-3"></div>
     <div class="col-md-6">
-        <div class="prescriptions">
-            <div class="prescription" ng-repeat="prescription in prescriptions">
-                <div class="remind">
-                    <input type="checkbox" ng-model="prescription.remind" ng-click="toggleRemind(prescription)"/>
+        <h3 class="text-center"><span class="label label-default">My Prescriptions</span></h3>
+
+        <div class="row vcenter" ng-repeat="prescription in prescriptions">
+            <div class="col-md-2">
+                <div class="checkbox">
+                    <label><input type="checkbox" ng-model="prescription.remind" ng-click="toggleRemind(prescription)"/>Remind</label>
                 </div>
-                <div class="prescriptionBox">
-                    <div class="prescriptionTitleBar">
-                <span class="pillImage">
-                    <img src="http://placehold.it/200x200" style="width:1em; height:1em;"/>
-                </span>
-                <span class="prescriptionQuantityDisplay">
-                    x{{prescription.dosage}}
-                </span>
-                <span class="prescriptionName">
-                    <input type="text" ng-model="prescription.displayName" ng-disabled="!prescription.editing"/>
-                </span>
-                        <div class="editControls">
-                            <a href="#" onclick="return false;" ng-if="!(isEditing(prescription))" ng-click="edit(prescription)">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                            </a>
-                            <input type="button" value="Save" ng-if="isEditing(prescription)" ng-click="saveEdit(prescription)"/>
-                            <input type="button" value="Cancel" ng-if="isEditing(prescription)" ng-click="cancelEdit(prescription)" />
-                        </div>
-                    </div>
-                    <div class="prescriptionContentBox">
+            </div>
+            <!--<div class="remind">
+                <input type="checkbox" ng-model="prescription.remind" ng-click="toggleRemind(prescription)"/>
+            </div>-->
+            <div class="col-md-10">
+                <accordion close-others=false >
+                    <accordion-group is-open=status.open>
+                        <accordion-heading>
+
+                            <img src="http://placehold.it/30x30" class="img-rounded"/> x {{prescription.dosage}}
+                            <span class="prescriptionName">
+                                <input type="text" ng-model="prescription.displayName" ng-disabled="!prescription.editing"/>
+                            </span>
+                            <div class="editControls">
+                                <a href="#" onclick="return false;" ng-if="!(isEditing(prescription))" ng-click="edit(prescription)">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+                                <input type="button" value="Save" ng-if="isEditing(prescription)" ng-click="saveEdit(prescription)"/>
+                                <input type="button" value="Cancel" ng-if="isEditing(prescription)" ng-click="cancelEdit(prescription)" />
+                            </div>
+                        </accordion-heading>
                         <div class="quantityControl">
                             <input type="number" ng-model="prescription.quantity" ng-disabled="!prescription.editing"> remaining
                         </div>
@@ -93,10 +96,26 @@
                         <input class="btn btn-danger" type="button" value="Delete" style="float:right" ng-show="prescription.editing && !confirmingDelete(prescription)" ng-click="prescription.confirmingDelete = true">
                         <input class="btn btn-default" type="button" value="Don't Delete" style="float:right" ng-show="prescription.editing && confirmingDelete(prescription)" ng-click="prescription.confirmingDelete = false">
                         <input class="btn btn-danger" type="button" value="Really Delete" style="float:right" ng-show="prescription.editing && confirmingDelete(prescription)" ng-click="deletePrescription(prescription)">
-                    </div>
-                </div>
+                    </accordion-group>
+                        <!--<div class="prescriptionTitleBar">
+
+                        </div>-->
+                    <!--<div class="prescriptionContentBox">
+
+                    </div>-->
+
+                </accordion>
+                <!--<div class="prescriptionBox">
+
+                </div>-->
             </div>
+
+
         </div>
+           <!-- <div class="prescription" ng-repeat="prescription in prescriptions">
+
+            </div>-->
+
         <footer class="footer addButton">
             <a href="#" onclick="return false;" ng-click="addPrescription()">
                 <span class="glyphicon glyphicon-plus"></span>
