@@ -1,8 +1,49 @@
 //initialize the angular app
 
-var app = angular.module("pillstrApp", ['ngRoute', 'ui.bootstrap']);
+var app = angular.module("pillstrApp", ['ngRoute', 'ui.bootstrap', 'pillstrApp.services']);
 
-var apiBaseURL = "http://129.21.61.152:8080/";
+angular.module("pillstrApp.services", [])
+    .service("$dataService", [
+        "$http", function($http) {
+            var apiBaseURL = "http://127.0.0.1:8080/";
+
+            return {
+                getRecord: function(url, onSuccess, onError) {
+                    onSuccess = onSuccess === undefined ? function() {} : onSuccess;
+                    onError = onError === undefined ? function() {} : onError;
+
+                    console.log("GET: " + url);
+                    return $http.get(url).success(onSuccess).error(onError)
+                        .then(function(result) {
+                            return result.data;
+                        });
+                },
+
+                getAllRecords: function(datatype, onSuccess, onError) {
+                    var url = apiBaseURL + datatype;
+                    return this.getRecord(url, onSuccess, onError);
+                },
+
+                getRecordByID: function(datatype, id, onSuccess, onError) {
+                    var url = apiBaseURL + datatype + '/' + id;
+                    return this.getRecord(url, onSuccess, onError);
+                },
+
+                getUserByName: function(username, onSuccess, onError) {
+                    var url = apiBaseURL + 'users/-/by-name/'+ username;
+                    return this.getRecord(url, onSuccess, onError);
+                },
+
+                getRemindersForWeek: function(userId, date, onSuccess, onError) {
+                    var url = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + date.getFullYear() +
+                        '/' + (date.getMonth() + 1) + '/' + date.getDate();
+                    return this.getRecord(url, onSuccess, onError);
+                }
+            }
+        }
+    ]);
+//var apiBaseURL = "http://129.21.61.152:8080/";
+var apiBaseURL = "http://127.0.0.1:8080/";
 
 
 //configure app routes
@@ -47,7 +88,7 @@ app.controller("loginController", function($scope, $location, $http){
         };
         console.log(request);
 
-        $http.get('http://129.21.61.152:8080/users/-/check-password/'+request.username+'/'+request.password+'', request).
+        $http.get(apiBaseURL + 'users/-/check-password/'+request.username+'/'+request.password+'', request).
             success(function(data) {
                 $scope.response = data;
 
@@ -88,7 +129,7 @@ app.controller("accountController", function($scope, $location, $http){
             username : $scope.username,
             phone : $scope.phone
         };
-        var url = 'http://129.21.61.152:8080/users?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
+        var url = apiBaseURL + 'users?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
        // console.log("url is: " + url);
         $http.post(url).
             success(function(data) {
@@ -105,31 +146,31 @@ app.controller("accountController", function($scope, $location, $http){
 });
 
 //Home controller
-app.controller("homeController", function($scope, $http){
+app.controller("homeController", function($scope, $http, $dataService){
     sessionStorage.setItem('contrl', "homeController");
     sessionStorage.setItem('auth', true);
 
     var username = sessionStorage.getItem('currUser');
-    $http.get(apiBaseURL + 'users/-/by-name/'+username+'').
-        success(function(data) {
-            $scope.uId = data.id;
-            console.log(data.id);
-            page(data.id);
-        }).
-        error(function(data) {
-            console.log("Error occurred in getting user id.");
-        });
+    var userPromise = $dataService.getUserByName(username);
 
     //var userId = 1//sessionStorage.getItem('userId');
-    var page = function(userId) {
+    userPromise.then(function(results) {
+        var userId = results.id;
         $scope.reminders = [];
         var today = new Date();
-        var reminderUrl = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate()
-        $http.get(reminderUrl)
-            .success(function(data, status, headers, config) {
-                //$scope.reminders = data;
+        //var reminderUrl = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
+
+        $dataService.getRemindersForWeek(userId, new Date(),
+            function(data) {
                 console.log(data);
+                $scope.reminders = data;
             });
+        //console.log(reminderUrl);
+        //$http.get(reminderUrl)
+        //    .success(function(data, status, headers, config) {
+        //        //$scope.reminders = data;
+        //        console.log(data);
+        //    });
         //$scope.reminders = [];
         //
         //$http.get(apiBaseURL + 'prescriptions/-/by-userId/' + userId)
@@ -276,25 +317,19 @@ app.controller("homeController", function($scope, $http){
                 checked: false
             }
         ];
-    };
+    });
 });
 
 //Prescription controller
-app.controller("prescriptionController", function($scope, $http){
+app.controller("prescriptionController", function($scope, $http, $dataService){
     sessionStorage.setItem('auth', true);
 
     var username = sessionStorage.getItem('currUser');
-    $http.get(apiBaseURL + 'users/-/by-name/'+username+'').
-        success(function(data) {
-            $scope.uId = data.id;
-            console.log(data.id);
-            page(data.id);
-        }).
-        error(function(data) {
-            console.log("Error occurred in getting user id.");
-        });
+    var userPromise = $dataService.getUserByName(username);
 
-    var page = function(userId) {
+    userPromise.then(function(results) {
+        var userId = results.id;
+
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         //sessionStorage.getItem('userId');
         //var userId = $scope.uId;//sessionStorage.getItem('userId');
@@ -603,7 +638,7 @@ app.controller("prescriptionController", function($scope, $http){
 
             }
         };
-    };
+    });
 });
 
 //Settings controller
