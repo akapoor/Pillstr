@@ -43,9 +43,7 @@ public class RemindersHandler {
     public List<Reminder> generateRemindersForEntireWeek(int prescriptionId, int year, int month, int date) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, date);
-        cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR));
-        cal.add(Calendar.DATE, -1);
-
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
 
         List<Reminder> result = new ArrayList<>();
         for (int i=0; i<7; i++) {
@@ -65,12 +63,12 @@ public class RemindersHandler {
 
     private List<Reminder> getAll(int prescriptionId, Calendar cal) {
         List<Reminder> result = new ArrayList<>();
-        List<PillEvent> events = pillEventDAO.getAllByPrescriptionIdAndDay(prescriptionId, cal.get(Calendar.DAY_OF_WEEK));
+        List<PillEvent> events = pillEventDAO.getAllByPrescriptionIdAndDay(prescriptionId, cal.DAY_OF_WEEK);
 
         for (PillEvent event : events) {
-            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), event.getHour(), event.getMinute(), 0);
+            cal.set(cal.YEAR, cal.MONTH, cal.DATE, event.getHour(), event.getMinute());
             long eventTime = cal.getTimeInMillis();
-            Optional<Reminder> reminder = Optional.fromNullable(remindersDAO.getByPrescriptionIdAndTime(prescriptionId, parseTime(eventTime)));
+            Optional<Reminder> reminder = Optional.of(remindersDAO.getByPrescriptionIdAndTime(prescriptionId, eventTime));
             if (!reminder.isPresent()) {
                 int reminderId = remindersDAO.insert(prescriptionId, false, parseTime(eventTime));
                 result.add(remindersDAO.get(reminderId));
@@ -90,7 +88,7 @@ public class RemindersHandler {
     }
 
     public void deletePastTime(int prescriptionId, long time) {
-        List<Reminder> reminders = remindersDAO.getPastTime(prescriptionId, parseTime(time));
+        List<Reminder> reminders = remindersDAO.getPastTime(prescriptionId, time);
         for (Reminder reminder : reminders) {
             remindersDAO.delete(reminder.getId());
         }
