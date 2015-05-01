@@ -81,4 +81,10 @@ public class RemindersResource {
         month--;
         return remindersHandler.generateRemindersForEntireWeek(prescriptionId, year, month, date);
     }
+
+    @PUT
+    @Path("/{id}/taken/{taken}")
+    public void setTaken(@PathParam("id") int id, @PathParam("taken") boolean taken) {
+        remindersDAO.setTaken(id, taken);
+    }
 }
