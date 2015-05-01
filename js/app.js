@@ -24,6 +24,18 @@ angular.module("pillstrApp.services", [])
                     return this.getRecord(url, onSuccess, onError);
                 },
 
+                putRecord: function(url, data, onSuccess, onError) {
+                    onSuccess = onSuccess === undefined ? function() {} : onSuccess;
+                    onError = onError === undefined ? function() {} : onError;
+                    console.log("PUT: " + url);
+
+                    return $http({
+                        method: 'PUT',
+                        url: url,
+                        data: data
+                    }).success(onSuccess).error(onError);
+                },
+
                 getRecordByID: function(datatype, id, onSuccess, onError) {
                     var url = apiBaseURL + datatype + '/' + id;
                     return this.getRecord(url, onSuccess, onError);
@@ -38,6 +50,16 @@ angular.module("pillstrApp.services", [])
                     var url = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + date.getFullYear() +
                         '/' + (date.getMonth() + 1) + '/' + date.getDate();
                     return this.getRecord(url, onSuccess, onError);
+                },
+
+                getPrescriptions: function(userId, onSuccess, onError) {
+                    var url = apiBaseURL + 'prescriptions/-/by-userId/' + userId;
+                    return this.getRecord(url, onSuccess, onError);
+                },
+
+                putEvent: function(event, onSuccess, onError) {
+                    var url = apiBaseURL + 'reminders/' + event.id;
+                    return this.putRecord(url, event, onSuccess, onError);
                 }
             }
         }
@@ -150,129 +172,47 @@ app.controller("homeController", function($scope, $http, $dataService){
     sessionStorage.setItem('contrl', "homeController");
     sessionStorage.setItem('auth', true);
 
+    $scope.takePrescription = function(reminder) {
+        //TODO: Need an endpoint for this to work
+        //$dataService.putEvent(reminder);
+    };
+
     var username = sessionStorage.getItem('currUser');
     var userPromise = $dataService.getUserByName(username);
 
     //var userId = 1//sessionStorage.getItem('userId');
     userPromise.then(function(results) {
         var userId = results.id;
+
+        $scope.prescriptions = [];
+        $scope.prescriptionsById = {};
         $scope.reminders = [];
+
+        var prescriptionsPromise = $dataService.getPrescriptions(userId,
+            function(data) {
+                $scope.prescriptions = data;
+                for(var i = 0; i < data.length; i++) {
+                    $scope.prescriptionsById[data[i].id] = data[i];
+                }
+            });
+
         var today = new Date();
         //var reminderUrl = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
+        prescriptionsPromise.then(function() {
+            $dataService.getRemindersForWeek(userId, new Date(),
+                function (data) {
+                    console.log(data);
 
-        $dataService.getRemindersForWeek(userId, new Date(),
-            function(data) {
-                console.log(data);
-                $scope.reminders = data;
-            });
-        //console.log(reminderUrl);
-        //$http.get(reminderUrl)
-        //    .success(function(data, status, headers, config) {
-        //        //$scope.reminders = data;
-        //        console.log(data);
-        //    });
-        //$scope.reminders = [];
-        //
-        //$http.get(apiBaseURL + 'prescriptions/-/by-userId/' + userId)
-        //    .success(function(data, status, headers, config) {
-        //        if(status === 204) {
-        //            return
-        //        }
-        //        else if(!Array.isArray(data)) {
-        //            data = [data];
-        //        }
-        //
-        //        var today = new Date();
-        //
-        //        for(var i = 0; i < data.length; i++) {
-        //            console.log(data[i]);
-        //            $http.get(apiBaseURL + 'reminders/-/by-prescriptionId-for-entire-week/' + data[i].id + '/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate())
-        //                .success(function(data2, status, headers, config) {
-        //                    console.log('GET reminders successful');
-        //                    console.log(data2);
-        //                    if(!Array.isArray(data2)) {
-        //                        data2 = [data2]
-        //                    }
-        //                    $scope.reminders.concat(data2);
-        //                });
-        //        }
-        //    }
-        //);
-        $scope.reminders = [
-            {
-                "id": 0,
-                "prescription": "Gabapentin",
-                "userId": 7,
-                "displayName": "Neurontin",
-                "quantity": 6.2,
-                "day": 0,
-                "time": "9:00",
-                "taken": true,
-                "remaining": 10,
-                "notes": "Lorem nostrud tempor sunt sint ea cillum culpa enim culpa excepteur."
-            },
-            {
-                "id": 1,
-                "name": "Citalopram Hydrobromide",
-                "userId": 7,
-                "displayName": "Celexa",
-                "quantity": 3.3,
-                "day": 0,
-                "time": "12:00",
-                "taken": false,
-                "remaining": 20,
-                "notes": "Cupidatat amet reprehenderit esse culpa eiusmod dolore veniam."
-            },
-            {
-                "id": 2,
-                "name": "CIV Alprazolam",
-                "userId": 10,
-                "displayName": "Xanax",
-                "quantity": 6.2,
-                "day": 2,
-                "time": "15:00",
-                "taken": false,
-                "remaining": 6,
-                "notes": "Fugiat amet irure adipisicing do cupidatat nostrud cupidatat mollit duis enim id do deserunt."
-            },
-            {
-                "id": 3,
-                "name": "Clonazepam",
-                "userId": 2,
-                "displayName": "Klonopin",
-                "quantity": 9.7,
-                "day": 4,
-                "time": "10:00",
-                "taken": true,
-                "remaining": 12,
-                "notes": "Eu qui est minim proident non qui."
-            },
-            {
-                "id": 4,
-                "name": "Ciprofloxacin Hydrochloride",
-                "userId": 8,
-                "displayName": "Cipro",
-                "quantity": 3.6,
-                "day": 4,
-                "time": "18:00",
-                "taken": false,
-                "remaining": 31,
-                "notes": "Nisi excepteur deserunt magna velit enim exercitation consectetur fugiat deserunt amet aute."
-            },
-            {
-                "id": 5,
-                "name": "Oxycodone and Acetaminophen",
-                "userId": 6,
-                "displayName": "Percocet",
-                "quantity": 0.5,
-                "day": 6,
-                "time": "10:30",
-                "taken": false,
-                "remaining": 27,
-                "notes": "Proident sit veniam eu laboris veniam ut adipisicing."
-            }
-        ];
-        //
+                    for (var i = 0; i < data.length; i++) {
+                        var date = new Date(data[i].time);
+                        data[i].day = date.getDay();
+                        data[i].prescription = $scope.prescriptionsById[data[i].prescriptionId];
+                    }
+
+                    $scope.reminders = data;
+                });
+        });
+
         $scope.days = [
             {
                 name: 'Sunday',

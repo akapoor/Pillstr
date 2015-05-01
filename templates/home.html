@@ -40,7 +40,7 @@
 
                     <div class="col-md-2">
                         <div class="checkbox">
-                            <label><input type="checkbox" ng-model="reminder.taken"/>Took</label>
+                            <label><input type="checkbox" ng-model="reminder.taken" ng-click="takePrescription(reminder)"/>Took</label>
                         </div>
                     </div>
                     <div class="col-md-10">
@@ -51,15 +51,15 @@
                                         <img src="http://placehold.it/30x30" class="img-rounded"/>
                                     </span>
                                     <span class="reminderQuantityDisplay">
-                                        x{{reminder.quantity}}
+                                        x{{reminder.prescription.dosage}}
                                     </span>
                                     <span class="reminderName">
-                                        {{reminder.displayName}}
+                                        {{reminder.prescription.displayName}}
                                     </span>
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': status.open, 'glyphicon-chevron-down': !status.open}"></i>
                                 </accordion-heading>
-                                <p>{{reminder.remaining}} of this prescription remains
-                                    <span ng-if="reminder.remaining <= 10" class="glyphicon glyphicon-warning-sign"></span>
+                                <p>{{reminder.prescription.quantity}} of this prescription remains
+                                    <span ng-if="reminder.prescription.quantity <= 10" tooltip="This prescription is running low" class="glyphicon glyphicon-warning-sign" style="font-size:2em;"></span>
                                 </p>
                                 <textarea class="form-control" rows="3" readonly>{{reminder.notes}}</textarea>
                             </accordion-group>
