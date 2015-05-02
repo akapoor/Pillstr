@@ -61,9 +61,9 @@ public class RemindersResource {
         return remindersDAO.getByPrescriptionId(prescriptionId);
     }
     @DELETE
-    @Path("/{id}/reminders-past-time/{time}")
-    public void deletePastTime(@PathParam("id") int id, @PathParam("time") long time) {
-        remindersHandler.deletePastTime(id, time);
+    @Path("/-/by-prescriptionId/{prescriptionId}/reminders-past-time/{time}")
+    public void deletePastTime(@PathParam("prescriptionId") int prescriptionId, @PathParam("time") long time) {
+        remindersHandler.deletePastTime(prescriptionId, time);
     }
     @DELETE
     @Path("/-/by-prescriptionId/{prescriptionId}")
@@ -80,5 +80,11 @@ public class RemindersResource {
     public List<Reminder> getByPrescriptionIdForEntireWeek(@PathParam("prescriptionId") int prescriptionId, @PathParam("year")int year, @PathParam("month") int month, @PathParam("date") int date) {
         month--;
         return remindersHandler.generateRemindersForEntireWeek(prescriptionId, year, month, date);
+    }
+
+    @PUT
+    @Path("/{id}/taken/{taken}")
+    public void setTaken(@PathParam("id") int id, @PathParam("taken") boolean taken) {
+        remindersDAO.setTaken(id, taken);
     }
 }

@@ -41,4 +41,7 @@ public interface RemindersDAO {
 
     @SqlUpdate("DELETE FROM reminders WHERE prescriptionId = :prescriptionId")
     public void deleteByPrescriptionId(@Bind("prescriptionId") int prescriptionId);
+
+    @SqlUpdate("UPDATE reminders SET taken = :taken WHERE id = :id")
+    public void setTaken(@Bind("id") int id, @Bind("taken") boolean taken);
 }

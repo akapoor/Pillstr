@@ -5,7 +5,7 @@ var app = angular.module("pillstrApp", ['ngRoute', 'ui.bootstrap', 'pillstrApp.s
 angular.module("pillstrApp.services", [])
     .service("$dataService", [
         "$http", function($http) {
-            var apiBaseURL = "http://127.0.0.1:8080/";
+            var apiBaseURL = "http://74.74.160.36:8080/";
 
             return {
                 getRecord: function(url, onSuccess, onError) {
@@ -65,7 +65,7 @@ angular.module("pillstrApp.services", [])
         }
     ]);
 //var apiBaseURL = "http://129.21.61.152:8080/";
-var apiBaseURL = "http://127.0.0.1:8080/";
+var apiBaseURL = "http://74.74.160.36:8080/";
 
 
 //configure app routes
@@ -586,7 +586,7 @@ app.controller("prescriptionController", function($scope, $http, $dataService){
 app.controller("settingController", function($scope, $http, $location){
     sessionStorage.setItem('auth', true);
     var username = sessionStorage.getItem('currUser');
-    $http.get('http://129.21.61.152:8080/users/-/by-name/'+username+'').
+    $http.get('http://74.74.160.36:8080/users/-/by-name/'+username+'').
         success(function(data) {
             $scope.response = data;
             $scope.uId = $scope.response.id;
@@ -614,7 +614,7 @@ app.controller("settingController", function($scope, $http, $location){
             username : $scope.username,
             phone : $scope.phone
         };
-        var url = 'http://129.21.61.152:8080/users/'+$scope.uId+'?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
+        var url = 'http://74.74.160.36:8080/users/'+$scope.uId+'?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
         console.log("url is: " + url);
 
         $http.put(url).
@@ -630,7 +630,7 @@ app.controller("settingController", function($scope, $http, $location){
     }
 
     $scope.deleteAcct = function(){
-        $http.delete('http://129.21.61.152:8080/users/'+$scope.uId+'').
+        $http.delete('http://74.74.160.36:8080/users/'+$scope.uId+'').
             success(function(data) {
                 if($scope.saved == false){
                     $location.path('/login');
