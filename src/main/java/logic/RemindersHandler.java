@@ -64,7 +64,7 @@ public class RemindersHandler {
 
     private List<Reminder> getAll(int prescriptionId, Calendar cal) {
         List<Reminder> result = new ArrayList<>();
-        List<PillEvent> events = pillEventDAO.getAllByPrescriptionIdAndDay(prescriptionId, cal.get(Calendar.DAY_OF_WEEK));
+        List<PillEvent> events = pillEventDAO.getAllByPrescriptionIdAndDay(prescriptionId, cal.get(Calendar.DAY_OF_WEEK)-1);
 
         for (PillEvent event : events) {
             cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), event.getHour(), event.getMinute(), 0);
