@@ -172,6 +172,53 @@ app.controller("homeController", function($scope, $http, $dataService){
     sessionStorage.setItem('contrl', "homeController");
     sessionStorage.setItem('auth', true);
 
+    var today = new Date();var today = new Date();
+    console.log(today.getDay());
+    $scope.days = [
+        {
+            name: 'Sunday',
+            display: 'Su',
+            val: 0,
+            checked: today.getDay() == 0
+        },
+        {
+            name: 'Monday',
+            display: 'Mo',
+            val: 1,
+            checked: today.getDay() == 1
+        },
+        {
+            name: 'Tuesday',
+            display: 'Tu',
+            val: 2,
+            checked: today.getDay() == 2
+        },
+        {
+            name: 'Wednesday',
+            display: 'We',
+            val: 3,
+            checked: today.getDay() == 3
+        },
+        {
+            name: 'Thursday',
+            display: 'Th',
+            val: 4,
+            checked: today.getDay() == 4
+        },
+        {
+            name: 'Friday',
+            display: 'Fr',
+            val: 5,
+            checked: today.getDay() == 5
+        },
+        {
+            name: 'Saturday',
+            display: 'Sa',
+            val: 6,
+            checked: today.getDay() == 6
+        }
+    ];
+
     $scope.takePrescription = function(reminder) {
         //TODO: Need an endpoint for this to work
         //$dataService.putEvent(reminder);
@@ -196,7 +243,6 @@ app.controller("homeController", function($scope, $http, $dataService){
                 }
             });
 
-        var today = new Date();
         //var reminderUrl = apiBaseURL + 'users/' + userId + '/all-reminders-for-entire-week/' + today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
         prescriptionsPromise.then(function() {
             $dataService.getRemindersForWeek(userId, new Date(),
@@ -212,51 +258,6 @@ app.controller("homeController", function($scope, $http, $dataService){
                     $scope.reminders = data;
                 });
         });
-
-        $scope.days = [
-            {
-                name: 'Sunday',
-                display: 'Su',
-                val: 0,
-                checked: false
-            },
-            {
-                name: 'Monday',
-                display: 'Mo',
-                val: 1,
-                checked: false
-            },
-            {
-                name: 'Tuesday',
-                display: 'Tu',
-                val: 2,
-                checked: false
-            },
-            {
-                name: 'Wednesday',
-                display: 'We',
-                val: 3,
-                checked: false
-            },
-            {
-                name: 'Thursday',
-                display: 'Th',
-                val: 4,
-                checked: false
-            },
-            {
-                name: 'Friday',
-                display: 'Fr',
-                val: 5,
-                checked: false
-            },
-            {
-                name: 'Saturday',
-                display: 'Sa',
-                val: 6,
-                checked: false
-            }
-        ];
     });
 });
 
