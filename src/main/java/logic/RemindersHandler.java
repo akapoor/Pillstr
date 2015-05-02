@@ -43,14 +43,13 @@ public class RemindersHandler {
     public List<Reminder> generateRemindersForEntireWeek(int prescriptionId, int year, int month, int date) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, date);
-        cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR));
-        cal.add(Calendar.DATE, -1);
-
+        cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR)-1);
+        cal.set(Calendar.DAY_OF_WEEK, 0);
 
         List<Reminder> result = new ArrayList<>();
         for (int i=0; i<7; i++) {
-            result.addAll(getAll(prescriptionId, cal));
             cal.add(Calendar.DATE, 1);
+            result.addAll(getAll(prescriptionId, cal));
         }
 
         return result;
