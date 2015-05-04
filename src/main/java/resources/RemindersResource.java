@@ -61,18 +61,14 @@ public class RemindersResource {
         return remindersDAO.getByPrescriptionId(prescriptionId);
     }
     @DELETE
-    @Path("/-/by-prescriptionId/{prescriptionId}/reminders-past-time/{time}")
-    public void deletePastTime(@PathParam("prescriptionId") int prescriptionId, @PathParam("time") long time) {
-        remindersHandler.deletePastTime(prescriptionId, time);
+    @Path("/-/by-prescriptionId/{prescriptionId}/reminders-past-now")
+    public void deletePastTime(@PathParam("prescriptionId") int prescriptionId) {
+        remindersHandler.deletePastNow(prescriptionId);
     }
     @DELETE
     @Path("/-/by-prescriptionId/{prescriptionId}")
-    public void deleteByPrescriptionId(@PathParam("prescriptionId") int prescriptionId, @QueryParam("time") Optional<Long> time) {
-        if (time.isPresent()) {
-            remindersHandler.deletePastTime(prescriptionId, time.get());
-        } else {
-            remindersDAO.deleteByPrescriptionId(prescriptionId);
-        }
+    public void deleteByPrescriptionId(@PathParam("prescriptionId") int prescriptionId) {
+        remindersDAO.deleteByPrescriptionId(prescriptionId);
     }
 
     @GET

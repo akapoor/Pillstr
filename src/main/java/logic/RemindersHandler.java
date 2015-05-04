@@ -71,8 +71,10 @@ public class RemindersHandler {
             long eventTime = cal.getTimeInMillis();
             Optional<Reminder> reminder = Optional.fromNullable(remindersDAO.getByPrescriptionIdAndTime(prescriptionId, parseTime(eventTime)));
             if (!reminder.isPresent()) {
-                int reminderId = remindersDAO.insert(prescriptionId, false, parseTime(eventTime));
-                result.add(remindersDAO.get(reminderId));
+                if (eventTime > System.currentTimeMillis()) {
+                    int reminderId = remindersDAO.insert(prescriptionId, false, parseTime(eventTime));
+                    result.add(remindersDAO.get(reminderId));
+                }
             } else {
                 result.add(reminder.get());
             }
@@ -88,7 +90,8 @@ public class RemindersHandler {
         return getAll(prescriptionId, cal);
     }
 
-    public void deletePastTime(int prescriptionId, long time) {
+    public void deletePastNow(int prescriptionId) {
+        long time = System.currentTimeMillis();
         List<Reminder> reminders = remindersDAO.getPastTime(prescriptionId, parseTime(time));
         for (Reminder reminder : reminders) {
             remindersDAO.delete(reminder.getId());
