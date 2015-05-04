@@ -56,6 +56,9 @@
                                     <span class="reminderName">
                                         {{reminder.prescription.displayName}}
                                     </span>
+                                    <span>
+                                        {{getDatePretty(reminder)}}
+                                    </span>
                                     <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-up': status.open, 'glyphicon-chevron-down': !status.open}"></i>
                                 </accordion-heading>
                                 <p>{{reminder.prescription.quantity}} of this prescription remains

@@ -169,8 +169,15 @@ app.controller("homeController", function($scope, $http, $dataService){
     sessionStorage.setItem('contrl', "homeController");
     sessionStorage.setItem('auth', true);
 
-    var today = new Date();var today = new Date();
+    var today = new Date();
     console.log(today.getDay());
+
+    $scope.getDatePretty = function(reminder) {
+        var d = new Date(reminder.time);
+        return ("0" + (d.getHours() % 12 )).slice(-2)   + ":" +
+        ("0" + d.getMinutes()).slice(-2) + (d.getHours() >= 12 ? " PM" : " AM");
+    };
+
     $scope.days = [
         {
             name: 'Sunday',
