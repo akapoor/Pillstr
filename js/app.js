@@ -614,7 +614,7 @@ app.controller("settingController", function($scope, $http, $location){
             username : $scope.username,
             phone : $scope.phone
         };
-        var url = apiBaseUrl+'users/'+$scope.uId+'?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
+        var url = apiBaseURL+'users/'+$scope.uId+'?name='+request.name+'&email='+request.email+'&password='+request.password+'&username='+request.username+'&phone='+request.phone+'';
         console.log("url is: " + url);
 
         $http.put(url).
@@ -630,7 +630,7 @@ app.controller("settingController", function($scope, $http, $location){
     };
 
     $scope.deleteAcct = function(){
-        $http.delete(apiBaseUrl+'users/'+$scope.uId+'').
+        $http.delete(apiBaseURL+'users/'+$scope.uId+'').
             success(function(data) {
                 if($scope.saved == false){
                     $location.path('/login');
