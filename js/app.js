@@ -466,6 +466,9 @@ app.controller("prescriptionController", function($scope, $http, $dataService){
                     method: 'POST',
                     params: parameters,
                     data: parameters
+                }).success(function(data) {
+                    console.log(data);
+                    prescription.id = data;
                 });
 
             }
@@ -624,7 +627,7 @@ app.controller("settingController", function($scope, $http, $location){
                 console.log(data);
             });
         $scope.saved = true;
-    }
+    };
 
     $scope.deleteAcct = function(){
         $http.delete(apiBaseUrl+'/users/'+$scope.uId+'').
